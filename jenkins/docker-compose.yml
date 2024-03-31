@@ -1,0 +1,22 @@
+# docker-compose.yaml
+# https://www.cloudbees.com/blog/how-to-install-and-run-jenkins-with-docker-compose
+# https://hub.docker.com/r/jenkins/jenkins/tags
+# https://www.jenkins.io/projects/gsoc/2023/project-ideas/docker-compose-build/
+#
+# http://localhost:8080 
+# admin/c0c901dc60714824b6be9f121e9539c1
+
+
+version: '3.8'
+services:
+  jenkins:
+    image: jenkins/jenkins
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080
+      - 50000:50000
+    container_name: jenkins
+    volumes:
+      - /home/jaquiel/jenkins_compose/jenkins_configuration:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock

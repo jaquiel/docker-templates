@@ -1,0 +1,28 @@
+# https://x-team.com/blog/set-up-rabbitmq-with-docker-compose/
+# https://www.cloudamqp.com/blog/rabbitmq-directories-and-files-part-2-data-directory.html
+# https://hub.docker.com/_/rabbitmq/
+# https://stackoverflow.com/questions/68640806/docker-container-with-rabbitmq-crashing
+#
+# http://localhost:15672/
+# guest/guest
+
+version: '3.8'
+services:
+  rabbitmq:
+    image: rabbitmq:3.13.0-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+#    environment:
+#      RABBITMQ_DEFAULT_USER: "admin"
+#      RABBITMQ_DEFAULT_PASS: "admin"
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia
+      - ./rabbitmq/logs:/var/log/rabbitmq
+#      - ./rabbitmq/config:/etc/rabbitmq
+#    networks:
+#      - rabbitmq_net
+#networks:
+#  rabbitmq_net:
+#    driver: bridge
