@@ -1,1 +1,2 @@
 ./rabbitmq/rabbitmq
+./composes/single-store/.env

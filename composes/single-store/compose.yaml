@@ -1,0 +1,17 @@
+services:
+  singlestore:
+    image: singlestore/cluster-in-a-box:latest
+    container_name: singlestore-db
+    environment:
+      LICENSE_KEY: ${LICENSE_KEY}
+      ROOT_PASSWORD: strongpassword
+      START_AFTER_INIT: 'Y'
+    ports:
+      - "3306:3306" # Porta para conexões de clientes
+      - "8080:8080" # Porta para o SingleStore Studio (UI)
+    volumes:
+      - singlestore-data:/var/lib/memsql
+    restart: always
+
+volumes:
+  singlestore-data:
