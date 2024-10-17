@@ -1,0 +1,13 @@
+  services:
+    docker-logger:
+      container_name: docker-logger
+      image: amir20/dozzle:latest
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      ports:
+        - 8086:8080
+      environment:
+        - DOZZLE_TAILSIZE=100
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
+

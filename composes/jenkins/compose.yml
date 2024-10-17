@@ -6,8 +6,6 @@
 # http://localhost:8080 
 # admin/c0c901dc60714824b6be9f121e9539c1
 
-
-version: '3.8'
 services:
   jenkins:
     image: jenkins/jenkins

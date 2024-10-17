@@ -1,0 +1,72 @@
+version: '3'
+services:
+  zookeeper:
+    image: bitnami/zookeeper:latest
+    container_name: zookeeper
+    environment:
+      - ZOO_ENABLE_AUTH=no
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    ports:
+      - "2181:2181"
+    volumes:
+      - zookeeper_data:/bitnami/zookeeper
+
+  kafka:
+    image: bitnami/kafka:latest
+    container_name: kafka
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE=false  # Desativa métricas Confluent no Kafka
+
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    volumes:
+      - kafka_data:/bitnami/kafka
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:latest
+    container_name: control-center
+    depends_on:
+      - kafka
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      CONTROL_CENTER_CONNECT_CLUSTER: 'localhost:9092'
+      CONTROL_CENTER_KSQL_KSQLDB_URL: 'http://localhost:8088'  # Se for usar KSQL
+      CONTROL_CENTER_KSQL_ENABLED: "false"  # Se não estiver usando KSQL, desative
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_SECURITY_PROTOCOL: 'PLAINTEXT'
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_REPLICATION: 1
+    ports:
+      - "9021:9021"  # Porta onde o Control Center estará disponível
+    volumes:
+      - control_center_data:/var/lib/confluent-control-center
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8088:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    volumes:
+      - kafka_ui_data:/var/lib/kafka-ui
+      #- ~/kui/config.yml:/etc/kafkaui/dynamic_config.yaml
+
+volumes:
+  zookeeper_data:
+    driver: local
+  kafka_data:
+    driver: local
+  control_center_data:
+    driver: local
+  kafka_ui_data:
+    driver: local

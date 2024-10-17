@@ -6,7 +6,6 @@
 # http://localhost:15672/
 # guest/guest
 
-version: '3.8'
 services:
   rabbitmq:
     image: rabbitmq:3.13.0-management
